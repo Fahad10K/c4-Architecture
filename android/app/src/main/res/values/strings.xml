@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pizza Delivery</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Full Name</string>
+    <string name="phone">Phone Number</string>
+    <string name="home">Home</string>
+    <string name="stores">Stores</string>
+    <string name="cart">Cart</string>
+    <string name="orders">Orders</string>
+    <string name="profile">Profile</string>
+    <string name="notifications">Notifications</string>
+    <string name="chatbot">Chat with us</string>
+    <string name="checkout">Checkout</string>
+    <string name="track_order">Track Order</string>
+    <string name="admin">Admin</string>
+    <string name="search">Search</string>
+    <string name="recommendations">For You</string>
+</resources>

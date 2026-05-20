@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pizza_red">#D32F2F</color>
+    <color name="pizza_red_dark">#B71C1C</color>
+    <color name="pizza_orange">#FF6F00</color>
+    <color name="pizza_yellow">#FFC107</color>
+    <color name="pizza_green">#388E3C</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_light">#F5F5F5</color>
+    <color name="gray_medium">#9E9E9E</color>
+    <color name="gray_dark">#424242</color>
+</resources>
