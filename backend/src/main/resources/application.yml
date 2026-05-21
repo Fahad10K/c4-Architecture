@@ -1,0 +1,180 @@
+server:
+  port: 3001
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: pizza-delivery-platform
+
+  # Use H2 for local dev, PostgreSQL for production
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:h2:mem:pizzadb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
+    driver-class-name: ${DB_DRIVER:org.h2.Driver}
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:cGl6emEtZGVsaXZlcnktcGxhdGZvcm0tc2VjcmV0LWtleS1mb3Itand0LXRva2VuLWdlbmVyYXRpb24}
+  refresh-secret: ${JWT_REFRESH_SECRET:cGl6emEtZGVsaXZlcnktcmVmcmVzaC1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW4tcmVmcmVzaA}
+  expiration-ms: 900000        # 15 minutes
+  refresh-expiration-ms: 604800000  # 7 days
+
+# AWS Configuration
+aws:
+  region: ${AWS_REGION:us-east-1}
+  endpoint: ${AWS_ENDPOINT:}
+  credentials:
+    access-key: ${AWS_ACCESS_KEY_ID:localstack}
+    secret-key: ${AWS_SECRET_ACCESS_KEY:localstack}
+
+  # S3 - Media Storage & Analytics
+  s3:
+    bucket-name: ${S3_BUCKET:pizza-delivery-media}
+    analytics-bucket: ${S3_ANALYTICS_BUCKET:pizza-delivery-analytics}
+    presigned-url-expiration: 3600
+
+  # CloudWatch
+  cloudwatch:
+    namespace: ${CLOUDWATCH_NAMESPACE:PizzaDelivery}
+
+  # SQS - Message Queues
+  sqs:
+    order-queue: ${SQS_ORDER_QUEUE:pizza-order-queue}
+    notification-queue: ${SQS_NOTIFICATION_QUEUE:pizza-notification-queue}
+    delivery-queue: ${SQS_DELIVERY_QUEUE:pizza-delivery-queue}
+
+  # SNS - Notifications
+  sns:
+    order-topic: ${SNS_ORDER_TOPIC:pizza-order-events}
+    notification-topic: ${SNS_NOTIFICATION_TOPIC:pizza-notifications}
+    sms-enabled: ${SNS_SMS_ENABLED:false}
+
+  # Cognito
+  cognito:
+    user-pool-id: ${COGNITO_USER_POOL_ID:us-east-1_simulated}
+    client-id: ${COGNITO_CLIENT_ID:simulated-client-id}
+
+  # OpenSearch
+  opensearch:
+    endpoint: ${OPENSEARCH_ENDPOINT:http://localhost:9200}
+    index-prefix: pizza
+
+  # Bedrock (AI/Chatbot)
+  bedrock:
+    model-id: ${BEDROCK_MODEL_ID:anthropic.claude-3-sonnet-20240229-v1:0}
+    max-tokens: 1024
+
+  # Kendra (RAG Knowledge Index)
+  kendra:
+    index-id: ${KENDRA_INDEX_ID:simulated-index}
+
+  # EventBridge
+  eventbridge:
+    bus-name: ${EVENTBRIDGE_BUS:pizza-delivery-events}
+
+  # SES - Email
+  ses:
+    from-email: ${SES_FROM_EMAIL:noreply@pizzaplatform.com}
+
+# Payment Gateway Configuration
+payment:
+  gateway:
+    provider: ${PAYMENT_PROVIDER:stripe}
+
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY:sk_test_simulated}
+  publishable-key: ${STRIPE_PUBLISHABLE_KEY:pk_test_simulated}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_simulated}
+
+adyen:
+  api-key: ${ADYEN_API_KEY:}
+  merchant-account: ${ADYEN_MERCHANT_ACCOUNT:}
+  environment: ${ADYEN_ENV:TEST}
+
+# SpringDoc / Swagger
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+
+# Actuator endpoints (Observability)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: pizza-delivery-platform
+
+# Logging
+logging:
+  level:
+    com.pizza.delivery: DEBUG
+    org.springframework.security: INFO
+    software.amazon.awssdk: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+---
+# Production profile
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  h2:
+    console:
+      enabled: false
+  sql:
+    init:
+      mode: never
