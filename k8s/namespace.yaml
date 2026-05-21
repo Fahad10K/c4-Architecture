@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pizza-delivery
+  labels:
+    app.kubernetes.io/name: pizza-delivery
+    app.kubernetes.io/part-of: pizza-platform

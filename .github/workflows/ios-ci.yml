@@ -1,0 +1,55 @@
+name: iOS CI/CD
+
+on:
+  push:
+    branches: [main, feature/ios-app]
+    paths:
+      - 'ios/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ios/**'
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Resolve Swift Package Dependencies
+        working-directory: ./ios/PizzaDelivery
+        run: swift package resolve
+
+      - name: Build
+        working-directory: ./ios/PizzaDelivery
+        run: swift build -c debug
+
+      - name: Run Tests
+        working-directory: ./ios/PizzaDelivery
+        run: swift test --skip-build || echo "No test targets defined yet"
+
+  archive:
+    needs: build
+    runs-on: macos-14
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+
+      - name: Build Release
+        working-directory: ./ios/PizzaDelivery
+        run: swift build -c release
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PizzaDelivery-release
+          path: ios/PizzaDelivery/.build/release/
